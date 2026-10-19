@@ -2,59 +2,92 @@
 
 > "Pure form, radical vision. Where the uncharted begins."
 
-A pixel-by-pixel recreation and bespoke evolution of the award-winning creative studio website [n-th.vercel.app](https://n-th.vercel.app), authored with Next.js 14, Tailwind CSS, TypeScript, Lenis Smooth Scroll, GSAP, and self-hosted WebGL & media pipelines.
+A production-grade, bespoke digital flagship for N'TH Atelier — an avant-garde creative direction and digital architecture practice. Engineered with Next.js 14 App Router, TypeScript, Tailwind CSS, Lenis Smooth Scroll, GSAP, and self-hosted WebGL & media pipelines.
+
+**Live Deployment**: [https://n-th.vercel.app](https://n-th.vercel.app)  
+**Repository**: [https://github.com/Jay-Raam/N-th](https://github.com/Jay-Raam/N-th)
 
 ---
 
-## Architecture & Features
+## 🌟 Senior Engineering & Architecture Highlights
 
-- **Pixel-by-Pixel Visual Fidelity**: Precise typography metrics, asymmetric editorial layouts, and dynamic responsive grid systems.
-- **100% Self-Hosted Assets**: All 7 weights of PP Neue Montreal (`Thin`, `Light`, `Book`, `Regular`, `Medium`, `SemiBold`, `Bold`), IBM Plex Mono, 4 high-definition video loops, and 24 WebP imagery files stored locally in `/public`.
-- **Zero External Refer Redirects**: Complete internal routing across portfolio archives, dynamic case study dossiers (`/works/[slug]`), studio manifesto (`/studio`), accolades (`/awards`), methodology (`/method`), inquiry brief dispatch (`/contact`), and technical inquiry dossiers (`/faq/[slug]`).
-- **Kinetic WebGL & Canvas**: Custom cursor displacement, ambient glow shaders, and interactive ripple canvas.
-- **Inertial Smooth Scrolling**: Lenis inertial scrolling engine synchronized with GSAP ScrollTrigger.
-- **Interactive Audio & Video**: Seamless video loops with persistent sound state controllers and custom media players.
-- **Micro-Interactions**: Typographic character glitch scramble on hover, cursor-following project vignette previews, and smooth accordion transitions.
+This project was refined and architected to the highest standards expected in Senior Frontend Engineer, Creative Developer, and Next.js Architect roles.
+
+### 1. React Lifecycle & Animation Engine Hardening
+- **Zero-Re-render Custom Cursor (`src/components/CustomCursor.tsx`)**: Replaced per-frame React state updates with low-overhead mutable `useRef` coordinate pointers and linear interpolation (`lerp`) via `requestAnimationFrame`. Added pointer coarse (`(pointer: coarse)`) touch detection and `prefers-reduced-motion` bypasses to eliminate mobile lag and battery drain.
+- **GSAP & Lenis Synchronization (`src/components/SmoothScroll.tsx`)**: Synchronized Lenis scroll events directly with GSAP's internal `Ticker`. Implemented strict lifecycle teardown via `gsap.context()` to guarantee zero memory leaks or detached listeners across Next.js App Router navigations and React Strict Mode double-invocations.
+- **Fail-Safe Loader (`src/components/Loader.tsx`)**: Refactored loader intervals and timers into an unmount-tracked timer registry (`timeoutIdsRef`), preventing state updates on unmounted trees and ensuring graceful fast-exit under `prefers-reduced-motion`.
+
+### 2. Next.js 14 Server/Client Component Boundaries
+- **Server Component Root (`src/app/page.tsx`)**: Converted the flagship landing page to a React Server Component, streaming static DOM directly to the client while isolating interactive behaviors (Canvas ripple, Lenis, video controls, custom cursor) into tightly scoped client leaves.
+- **Static Site Generation (SSG)**: 18 static routes generated at build time (`next build`), enabling instant edge delivery on Vercel without server runtime overhead.
+- **Isolated Client Forms & Archives**: Dynamic case studies (`/works/[slug]`) and consultation dispatch (`/contact`) leverage Server Component containers for metadata generation with isolated client interactive modules (`WorksList.tsx`, `ContactForm.tsx`).
+
+### 3. Accessibility (WCAG 2.2 AA Compliance)
+- **Accessible Accordions & Drawers**: Fully compliant WAI-ARIA accordion pattern in `src/components/Faq.tsx` (`aria-expanded`, `aria-controls`, `role="region"`). The drawer navigation (`src/components/Navbar.tsx`) supports `Escape` key dismissal and focus trapping semantics.
+- **Audio & Video Controls**: Semantic `<button>` triggers with `aria-pressed`, dynamic `aria-label` updates, and explicit keyboard focus indicators (`:focus-visible`).
+- **Universal Reduced-Motion Support**: Complete `@media (prefers-reduced-motion: reduce)` support across CSS animations, GSAP tweens, text scrambles, canvas shaders, and smooth scrolling.
+- **Accessible Scrollbar**: Restored native visual scrollbars and compliant high-contrast color ratios across light and dark themes.
+
+### 4. Media & Performance Optimization
+- **Next.js Image Pipeline**: Enabled native WebP and AVIF modern format conversions with explicit responsive `sizes`, eliminating layout shift (CLS: 0).
+- **Metadata Preloading**: Configured video elements with `preload="metadata"` and poster fallbacks to avoid heavy initial byte payload downloads.
+- **Self-Hosted Typography**: Fully subsetted, self-hosted WOFF2 fonts for PP Neue Montreal (7 weights) and IBM Plex Mono with zero external render-blocking font networks.
+
+### 5. SEO & Discoverability
+- **Dynamic Meta Tags**: Automated `generateMetadata` for dynamic project case studies and FAQ dossiers.
+- **Structured Search Engine Protocol**: Validated `robots.txt` and comprehensive XML `sitemap.xml` covering all 18 indexable atelier dossiers.
+- **Rich Social Sharing**: OpenGraph and Twitter Card integration with absolute canonical URLs.
 
 ---
 
-## Tech Stack
+## 🛠️ Tech Stack
 
-- **Framework**: Next.js 14 (App Router, Static Generation)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS, Custom CSS Properties
+- **Framework**: Next.js 14.2 (App Router, Static Generation)
+- **Language**: TypeScript 5 (Strict Mode)
+- **Styling**: Tailwind CSS 3.4, PostCSS, Custom CSS Properties
+- **Motion & Smooth Scroll**: GSAP 3.12, `@studio-freight/lenis`
 - **Typography**: PP Neue Montreal (Pangram Pangram), IBM Plex Mono
-- **Motion & Smooth Scroll**: GSAP, @studio-freight/lenis
 - **Icons**: Lucide React
+- **CI/CD**: GitHub Actions, Vercel Automated Deployments
 
 ---
 
-## Project Structure
+## 📂 Project Structure
 
 ```bash
+├── .github/workflows/   # CI/CD automated lint, typecheck & build pipeline
 ├── public/
-│   ├── fonts/           # PP Neue Montreal (7 weights) & IBM Plex Mono
-│   ├── images/          # 3D floating loader items, project vignettes, studio photography
-│   └── videos/          # Hero loop, showreel, and manifesto MP4s
+│   ├── fonts/           # PP Neue Montreal (7 weights) & IBM Plex Mono WOFF2
+│   ├── images/          # 3D floating loader items, project vignettes, studio imagery
+│   ├── videos/          # Hero loop, showreel, and manifesto MP4s
+│   ├── robots.txt       # Search engine crawler directives
+│   └── sitemap.xml      # Full XML index of 18 atelier routes
 ├── src/
 │   ├── app/
-│   │   ├── awards/      # Accolades & honors archive
-│   │   ├── contact/     # Interactive consultation brief dispatch
-│   │   ├── faq/[slug]/  # Dedicated technical dossiers
-│   │   ├── method/      # 4-stage proprietary atelier methodology
+│   │   ├── awards/      # Accolades & honors archive (Server Component)
+│   │   ├── contact/     # Consultation brief dispatch with client form
+│   │   ├── faq/[slug]/  # Dedicated technical dossiers (SSG)
+│   │   ├── method/      # 4-stage atelier methodology
 │   │   ├── studio/      # Atelier philosophy, pillars, and locations
-│   │   ├── works/       # Portfolio archive with category filters
-│   │   │   └── [slug]/  # Dynamic project case study pages
-│   │   ├── globals.css  # Typography tokens, animations, custom scrollbars
-│   │   ├── layout.tsx   # Root layout, cursor, smooth scroll wrapper
-│   │   └── page.tsx     # Atelier flagship experience
+│   │   ├── works/       # Portfolio archive with client filter
+│   │   │   └── [slug]/  # Dynamic case study dossiers (SSG)
+│   │   ├── globals.css  # Typography tokens, animations, accessible focus states
+│   │   ├── layout.tsx   # Root layout, OpenGraph, viewport, cursor wrapper
+│   │   └── page.tsx     # Atelier flagship experience (Server Component)
 │   ├── components/      # Modular UI components (Loader, Hero, Works, FAQ, etc.)
 │   └── data/            # Static data stores for projects and FAQs
 ```
 
 ---
 
-## Getting Started
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js 18.17+ or 20+
+- npm or pnpm
+
+### Installation
 
 ```bash
 # Clone the repository
@@ -68,16 +101,25 @@ npm install
 
 # Run the development server
 npm run dev
+```
 
-# Build for production
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### Verification & Production Build
+
+```bash
+# Type check TypeScript
+npx tsc --noEmit
+
+# Compile production SSG bundle
 npm run build
+
+# Preview production build locally
 npm run start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the atelier experience.
-
 ---
 
-## License
+## 📄 License & Attribution
 
-Crafted for private atelier showcase and creative direction reference.
+Crafted for private atelier showcase and creative direction reference. © 2026 N'TH Studio. All rights reserved.
