@@ -1,20 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
 const LOADER_ITEMS = [
-  { src: "/images/loader/coeur-bulle-nb.webp", alt: "Coeur", top: "15%", left: "12%", size: "w-28 md:w-44" },
-  { src: "/images/loader/papier-froisse.webp", alt: "Papier", top: "25%", left: "75%", size: "w-32 md:w-52" },
-  { src: "/images/loader/asterix.webp", alt: "Asterix", top: "70%", left: "18%", size: "w-24 md:w-36" },
-  { src: "/images/loader/smiley.webp", alt: "Smiley", top: "65%", left: "80%", size: "w-20 md:w-32" },
-  { src: "/images/loader/bonbon.webp", alt: "Bonbon", top: "10%", left: "55%", size: "w-32 md:w-48" },
-  { src: "/images/loader/chwing.webp", alt: "Chewing Gum", top: "45%", left: "8%", size: "w-28 md:w-40" },
-  { src: "/images/loader/sac-plastic.webp", alt: "Sac", top: "78%", left: "45%", size: "w-24 md:w-36" },
-  { src: "/images/loader/chien.webp", alt: "Chien", top: "35%", left: "68%", size: "w-28 md:w-44" },
-  { src: "/images/loader/piniata.webp", alt: "Pinata", top: "52%", left: "78%", size: "w-24 md:w-40" },
-  { src: "/images/loader/cube.webp", alt: "Cube", top: "82%", left: "72%", size: "w-24 md:w-36" },
-  { src: "/images/loader/bouee.webp", alt: "Bouee", top: "18%", left: "32%", size: "w-28 md:w-44" },
+  { src: "/images/loader/coeur-bulle-nb.webp", alt: "Coeur Sculpture", top: "15%", left: "12%", size: "w-28 md:w-44" },
+  { src: "/images/loader/papier-froisse.webp", alt: "Papier Froisse Texture", top: "25%", left: "75%", size: "w-32 md:w-52" },
+  { src: "/images/loader/asterix.webp", alt: "Asterix Symbol", top: "70%", left: "18%", size: "w-24 md:w-36" },
+  { src: "/images/loader/smiley.webp", alt: "Smiley Motif", top: "65%", left: "80%", size: "w-20 md:w-32" },
+  { src: "/images/loader/bonbon.webp", alt: "Bonbon Form", top: "10%", left: "55%", size: "w-32 md:w-48" },
+  { src: "/images/loader/chwing.webp", alt: "Polymer Texture", top: "45%", left: "8%", size: "w-28 md:w-40" },
+  { src: "/images/loader/sac-plastic.webp", alt: "Tactile Membrane", top: "78%", left: "45%", size: "w-24 md:w-36" },
+  { src: "/images/loader/chien.webp", alt: "Sculptural Dog", top: "35%", left: "68%", size: "w-28 md:w-44" },
+  { src: "/images/loader/piniata.webp", alt: "Spatial Pinata", top: "52%", left: "78%", size: "w-24 md:w-40" },
+  { src: "/images/loader/cube.webp", alt: "Geometric Cube", top: "82%", left: "72%", size: "w-24 md:w-36" },
+  { src: "/images/loader/bouee.webp", alt: "Toroid Form", top: "18%", left: "32%", size: "w-28 md:w-44" },
 ];
 
 export default function Loader({ onFinish }: { onFinish?: () => void }) {
@@ -22,10 +22,19 @@ export default function Loader({ onFinish }: { onFinish?: () => void }) {
   const [visibleItems, setVisibleItems] = useState<number[]>([]);
   const [isExiting, setIsExiting] = useState(false);
   const [isRemoved, setIsRemoved] = useState(false);
+  const timeoutIdsRef = useRef<NodeJS.Timeout[]>([]);
 
   useEffect(() => {
-    const duration = 1800;
-    const intervalTime = 20;
+    // If user prefers reduced motion, fast-track loader exit
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) {
+      setIsRemoved(true);
+      if (onFinish) onFinish();
+      return;
+    }
+
+    const duration = 1600;
+    const intervalTime = 25;
     const steps = duration / intervalTime;
     let currentStep = 0;
 
@@ -40,9 +49,9 @@ export default function Loader({ onFinish }: { onFinish?: () => void }) {
         if (prev.length >= itemsToReveal) return prev;
         const newArr = [...prev];
         while (newArr.length < itemsToReveal) {
-          const randomIndex = Math.floor(Math.random() * LOADER_ITEMS.length);
-          if (!newArr.includes(randomIndex)) {
-            newArr.push(randomIndex);
+          const nextIndex = newArr.length;
+          if (nextIndex < LOADER_ITEMS.length) {
+            newArr.push(nextIndex);
           }
         }
         return newArr;
@@ -50,23 +59,31 @@ export default function Loader({ onFinish }: { onFinish?: () => void }) {
 
       if (progress >= 1) {
         clearInterval(timer);
-        setTimeout(() => {
+        const t1 = setTimeout(() => {
           setIsExiting(true);
-          setTimeout(() => {
+          const t2 = setTimeout(() => {
             setIsRemoved(true);
             if (onFinish) onFinish();
-          }, 800);
-        }, 200);
+          }, 700);
+          timeoutIdsRef.current.push(t2);
+        }, 150);
+        timeoutIdsRef.current.push(t1);
       }
     }, intervalTime);
 
-    return () => clearInterval(timer);
+    return () => {
+      clearInterval(timer);
+      timeoutIdsRef.current.forEach((id) => clearTimeout(id));
+      timeoutIdsRef.current = [];
+    };
   }, [onFinish]);
 
   if (isRemoved) return null;
 
   return (
-    <div
+    <aside
+      aria-label="Loading animation"
+      aria-live="polite"
       className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black transition-all duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] ${
         isExiting ? "-translate-y-full opacity-0 pointer-events-none" : "translate-y-0 opacity-100"
       }`}
@@ -88,10 +105,10 @@ export default function Loader({ onFinish }: { onFinish?: () => void }) {
             <Image
               src={item.src}
               alt={item.alt}
-              width={300}
-              height={300}
+              width={240}
+              height={240}
               className="w-full h-auto object-contain filter drop-shadow-2xl"
-              priority
+              priority={idx < 4}
             />
           </div>
         );
@@ -106,6 +123,6 @@ export default function Loader({ onFinish }: { onFinish?: () => void }) {
           {count.toString().padStart(3, "0")}
         </div>
       </div>
-    </div>
+    </aside>
   );
 }
