@@ -1,13 +1,21 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Lenis from "lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
+  const lenisRef = useRef<Lenis | null>(null);
+
   useEffect(() => {
     if (typeof window === "undefined") return;
+
+    // Respect reduced-motion preferences with native scrolling fallback
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) {
+      return;
+    }
 
     gsap.registerPlugin(ScrollTrigger);
 
@@ -20,8 +28,12 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
       wheelMultiplier: 1,
       touchMultiplier: 2,
     });
+    lenisRef.current = lenis;
 
-    lenis.on("scroll", ScrollTrigger.update);
+    const onScroll = () => {
+      ScrollTrigger.update();
+    };
+    lenis.on("scroll", onScroll);
 
     const tickerCallback = (time: number) => {
       lenis.raf(time * 1000);
@@ -32,7 +44,9 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
 
     return () => {
       gsap.ticker.remove(tickerCallback);
+      lenis.off("scroll", onScroll);
       lenis.destroy();
+      lenisRef.current = null;
     };
   }, []);
 
