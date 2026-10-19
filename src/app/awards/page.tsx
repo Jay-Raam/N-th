@@ -1,7 +1,22 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Accolades & Honors",
+  description:
+    "International recognition, design awards, and industry distinctions awarded to N'TH Studio commissions from 2024 to 2026.",
+  alternates: {
+    canonical: "https://n-th.vercel.app/awards",
+  },
+  openGraph: {
+    title: "Accolades & Honors | N'TH STUDIO",
+    description: "Industry awards and jury honors awarded to N'TH Studio commissions.",
+    url: "https://n-th.vercel.app/awards",
+  },
+};
 
 const HONORS = [
   {
@@ -71,7 +86,7 @@ export default function AwardsPage() {
               <div className="flex items-baseline space-x-6 md:space-x-12">
                 <span className="font-mono text-xs text-white/40">{honor.year}</span>
                 <div>
-                  <h3
+                  <h2
                     className="text-xl sm:text-2xl font-sans font-normal"
                     dangerouslySetInnerHTML={{ __html: honor.title }}
                   />
@@ -96,10 +111,10 @@ export default function AwardsPage() {
           </span>
           <Link
             href="/contact"
-            className="inline-flex items-center space-x-2 px-6 py-3 border border-white/20 rounded-full font-mono text-xs uppercase tracking-widest hover:border-white hover:bg-white hover:text-black transition-all"
+            className="inline-flex items-center space-x-2 px-6 py-3 border border-white/20 rounded-full font-mono text-xs uppercase tracking-widest hover:border-white hover:bg-white hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-white transition-all"
           >
             <span>DISCUSS AN ENGAGEMENT</span>
-            <ArrowUpRight className="w-4 h-4" />
+            <ArrowUpRight className="w-4 h-4" aria-hidden="true" />
           </Link>
         </div>
       </section>

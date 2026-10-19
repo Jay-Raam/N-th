@@ -1,7 +1,22 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Atelier Methodology & Protocol",
+  description:
+    "Our four-stage proprietary creative methodology: Strategic Distillation, Visual Architecture, Kinetic Engineering, and Cultural Activation.",
+  alternates: {
+    canonical: "https://n-th.vercel.app/method",
+  },
+  openGraph: {
+    title: "Atelier Methodology | N'TH STUDIO",
+    description: "Decisions decided, not decorated. Explore the four-stage atelier protocol.",
+    url: "https://n-th.vercel.app/method",
+  },
+};
 
 const PHASES = [
   {
@@ -69,9 +84,9 @@ export default function MethodPage() {
               </div>
 
               <div className="space-y-4">
-                <h3 className="text-2xl sm:text-3xl font-sans font-normal tracking-tight">
+                <h2 className="text-2xl sm:text-3xl font-sans font-normal tracking-tight">
                   {phase.name}
-                </h3>
+                </h2>
                 <p className="font-mono text-xs sm:text-sm text-white/70 leading-relaxed">
                   {phase.description}
                 </p>
@@ -87,10 +102,10 @@ export default function MethodPage() {
           </div>
           <Link
             href="/contact"
-            className="inline-flex items-center space-x-3 px-8 py-4 bg-white text-black rounded-full font-mono text-xs uppercase tracking-widest font-semibold hover:bg-neutral-200 transition-all"
+            className="inline-flex items-center space-x-3 px-8 py-4 bg-white text-black rounded-full font-mono text-xs uppercase tracking-widest font-semibold hover:bg-neutral-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white transition-all"
           >
             <span>COMMISSION THE ATELIER</span>
-            <ArrowUpRight className="w-4 h-4" />
+            <ArrowUpRight className="w-4 h-4" aria-hidden="true" />
           </Link>
         </div>
       </section>

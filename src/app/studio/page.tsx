@@ -1,8 +1,23 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { ArrowUpRight } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Atelier Ethos & Philosophy",
+  description:
+    "We believe true luxury is intentional restraint — leaving space for what truly matters to resonate. Operating across London, Paris, and global digital realms.",
+  alternates: {
+    canonical: "https://n-th.vercel.app/studio",
+  },
+  openGraph: {
+    title: "Atelier Ethos & Philosophy | N'TH STUDIO",
+    description: "Digital architecture for leaders who refuse the conventional.",
+    url: "https://n-th.vercel.app/studio",
+  },
+};
 
 export default function StudioPage() {
   return (
@@ -50,6 +65,7 @@ export default function StudioPage() {
               alt="Atelier Space"
               fill
               className="object-cover filter contrast-105"
+              sizes="(max-width: 768px) 100vw, 55vw"
             />
           </div>
           <div className="md:col-span-5 space-y-6 md:pl-6">
@@ -65,10 +81,10 @@ export default function StudioPage() {
             <div className="pt-4">
               <Link
                 href="/contact"
-                className="inline-flex items-center space-x-2 border border-white/20 px-6 py-3 rounded-full font-mono text-xs uppercase tracking-widest hover:border-white hover:bg-white hover:text-black transition-all"
+                className="inline-flex items-center space-x-2 border border-white/20 px-6 py-3 rounded-full font-mono text-xs uppercase tracking-widest hover:border-white hover:bg-white hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-white transition-all"
               >
                 <span>COMMISSION THE ATELIER</span>
-                <ArrowUpRight className="w-4 h-4" />
+                <ArrowUpRight className="w-4 h-4" aria-hidden="true" />
               </Link>
             </div>
           </div>

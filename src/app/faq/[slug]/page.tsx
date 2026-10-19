@@ -1,14 +1,37 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { FAQS, FaqItem } from "@/data/faqs";
+import { FAQS } from "@/data/faqs";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 
 export function generateStaticParams() {
   return FAQS.map((faq) => ({
     slug: faq.slug,
   }));
+}
+
+export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
+  const faq = FAQS.find((f) => f.slug === params.slug);
+  if (!faq) {
+    return {
+      title: "Inquiry Not Found",
+    };
+  }
+
+  return {
+    title: `${faq.question} — Atelier Dossier`,
+    description: faq.answer,
+    alternates: {
+      canonical: `https://n-th.vercel.app/faq/${faq.slug}`,
+    },
+    openGraph: {
+      title: `${faq.question} | N'TH STUDIO`,
+      description: faq.answer,
+      url: `https://n-th.vercel.app/faq/${faq.slug}`,
+    },
+  };
 }
 
 export default function FaqDetailPage({ params }: { params: { slug: string } }) {
@@ -24,14 +47,14 @@ export default function FaqDetailPage({ params }: { params: { slug: string } }) 
 
       <article className="pt-36 pb-24 px-6 md:px-12 max-w-5xl mx-auto flex flex-col space-y-16">
         {/* Breadcrumb */}
-        <div className="flex items-center space-x-3 font-mono text-xs uppercase tracking-wider text-white/50">
-          <Link href="/#faqs" className="hover:text-white transition-colors flex items-center space-x-1">
-            <ArrowLeft className="w-3.5 h-3.5" />
+        <nav aria-label="Breadcrumb" className="flex items-center space-x-3 font-mono text-xs uppercase tracking-wider text-white/50">
+          <Link href="/#faqs" className="hover:text-white transition-colors flex items-center space-x-1 focus-visible:underline">
+            <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />
             <span>Inquiries</span>
           </Link>
-          <span>/</span>
-          <span className="text-white">Dossier</span>
-        </div>
+          <span aria-hidden="true">/</span>
+          <span className="text-white" aria-current="page">Dossier</span>
+        </nav>
 
         {/* Title */}
         <div className="border-b border-white/15 pb-12 space-y-6">
@@ -67,17 +90,17 @@ export default function FaqDetailPage({ params }: { params: { slug: string } }) 
         <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
           <Link
             href="/#faqs"
-            className="font-mono text-xs uppercase tracking-widest text-white/50 hover:text-white transition-colors"
+            className="font-mono text-xs uppercase tracking-widest text-white/50 hover:text-white focus-visible:underline transition-colors"
           >
             &larr; BACK TO ALL INQUIRIES
           </Link>
 
           <Link
             href="/contact"
-            className="inline-flex items-center space-x-3 px-6 py-3 border border-white/20 rounded-full font-mono text-xs uppercase tracking-widest hover:border-white hover:bg-white hover:text-black transition-all"
+            className="inline-flex items-center space-x-3 px-6 py-3 border border-white/20 rounded-full font-mono text-xs uppercase tracking-widest hover:border-white hover:bg-white hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-white transition-all"
           >
             <span>DISCUSS THIS WITH FOUNDERS</span>
-            <ArrowUpRight className="w-4 h-4" />
+            <ArrowUpRight className="w-4 h-4" aria-hidden="true" />
           </Link>
         </div>
       </article>
