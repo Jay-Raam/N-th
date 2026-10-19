@@ -9,6 +9,36 @@ A production-grade, bespoke digital flagship for N'TH Atelier — an avant-garde
 
 ---
 
+## 📸 Visual Showcase & Interface Gallery
+
+<div align="center">
+  <img src="public/screenshots/01-hero-desktop.png" alt="N'TH Atelier Flagship Experience" width="100%" />
+</div>
+
+<br />
+
+| Interface Surface | Visual Architecture |
+| :--- | :--- |
+| **01. Atelier Hero & Spatial Navigation**<br>Interactive canvas ripple displacement, persistent audio status, dynamic coordinates, and custom magnetic cursor. | ![Atelier Hero](public/screenshots/01-hero-desktop.png) |
+| **02. Brand Vector Wordmark & Emblem**<br>Geometric SVG path drawing animated with GSAP ScrollTrigger and reactive illumination. | ![Brand Wordmark](public/screenshots/02-branding-emblem.png) |
+| **03. Selected Commissions Grid**<br>Asymmetric architectural grid with cursor-following floating vignette previews and category taxonomies. | ![Selected Commissions](public/screenshots/03-commissions-grid.png) |
+| **04. Fullscreen Video Manifesto**<br>Self-hosted high-definition video player with custom sound toggle, ambient reflections, and metadata preloading. | ![Manifesto Video](public/screenshots/04-manifesto-video.png) |
+| **05. Studio Ethos & Gallery**<br>Spatial typography composition and editorial photography exploring digital architecture and sensory systems. | ![Studio Ethos](public/screenshots/05-studio-ethos.png) |
+| **06. Accessible Inquiries & Dossiers**<br>WCAG 2.2 AA compliant WAI-ARIA accordion with smooth transitions and dedicated deep dossier routes (`/faq/[slug]`). | ![Inquiries FAQ](public/screenshots/06-inquiries-faq.png) |
+| **07. Atelier Footer & Timezone Engine**<br>Real-time local timezone calculation (`Europe/Zurich`), semantic navigation links, and back-to-top inertial scroll. | ![Studio Footer](public/screenshots/07-studio-footer.png) |
+
+---
+
+### 🎥 Self-Hosted Media Assets & Cinematic Video Pipelines
+
+All video and audio pipelines are self-hosted within [`public/videos`](public/videos), eliminating third-party streaming dependencies:
+
+- **Flagship Hero Ambient Loop**: [`public/videos/hero-bg.mp4`](public/videos/hero-bg.mp4) — High-bitrate 1080p background loop with canvas ripple interactions.
+- **Cinematic Showreel**: [`public/videos/showreel.mp4`](public/videos/showreel.mp4) — Studio showcase reel with interactive viewport pause observer.
+- **Studio Manifesto Video**: [`public/videos/manifesto.mp4`](public/videos/manifesto.mp4) — Atmospheric brand manifesto with ambient reflections and audio state sync.
+
+---
+
 ## 🌟 Senior Engineering & Architecture Highlights
 
 This project was refined and architected to the highest standards expected in Senior Frontend Engineer, Creative Developer, and Next.js Architect roles.
