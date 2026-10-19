@@ -1,17 +1,27 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const GLITCH_CHARS = "ABCDEFGHIJKLMOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?/§èéà";
 
 export default function GlitchText() {
   const [text, setText] = useState("THE UNCHARTED DIMENSION / BEYOND ORDINARY");
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const scramble = () => {
+    // If reduced motion is preferred, keep text static
+    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+
     const original = "THE UNCHARTED DIMENSION / BEYOND ORDINARY";
     let iterations = 0;
 
-    const interval = setInterval(() => {
+    intervalRef.current = setInterval(() => {
       setText(
         original
           .split("")
@@ -26,7 +36,8 @@ export default function GlitchText() {
       );
 
       if (iterations >= original.length) {
-        clearInterval(interval);
+        if (intervalRef.current) clearInterval(intervalRef.current);
+        intervalRef.current = null;
       }
       iterations += 1 / 2;
     }, 25);
@@ -34,12 +45,16 @@ export default function GlitchText() {
 
   useEffect(() => {
     const timer = setTimeout(scramble, 1000);
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
   }, []);
 
   return (
     <section
       onMouseEnter={scramble}
+      aria-label="Interactive Typographic Protocol"
       className="relative w-full bg-neutral-950 text-white py-20 md:py-32 px-6 md:px-12 border-b border-white/10 overflow-hidden select-none cursor-crosshair group"
     >
       <div className="max-w-7xl mx-auto flex flex-col items-center text-center">

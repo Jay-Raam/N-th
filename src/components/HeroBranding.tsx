@@ -10,32 +10,41 @@ export default function HeroBranding() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) return;
+
     gsap.registerPlugin(ScrollTrigger);
 
-    const el = svgRef.current;
-    if (!el) return;
+    // Scoped GSAP context for reliable cleanup in React Strict Mode
+    const ctx = gsap.context(() => {
+      const el = svgRef.current;
+      if (!el) return;
 
-    // Scroll reveal scale & tracking
-    gsap.fromTo(
-      el,
-      { scale: 0.96, opacity: 0.8 },
-      {
-        scale: 1,
-        opacity: 1,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 80%",
-          end: "bottom 20%",
-          scrub: 1,
-        },
-      }
-    );
+      gsap.fromTo(
+        el,
+        { scale: 0.96, opacity: 0.8 },
+        {
+          scale: 1,
+          opacity: 1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: "top 80%",
+            end: "bottom 20%",
+            scrub: 1,
+          },
+        }
+      );
+    }, containerRef);
+
+    return () => ctx.revert();
   }, []);
 
   return (
     <section
       ref={containerRef}
+      aria-label="Atelier Brand Wordmark"
       className="relative w-full bg-black py-16 md:py-24 px-6 md:px-12 flex items-center justify-center overflow-hidden border-b border-white/10 select-none"
     >
       <div className="w-full max-w-7xl">
@@ -44,6 +53,8 @@ export default function HeroBranding() {
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 1408 294"
           fill="none"
+          role="img"
+          aria-label="N'TH Atelier Emblem"
           className="w-full h-auto text-white filter drop-shadow-[0_0_20px_rgba(255,255,255,0.06)]"
         >
           {/* N */}

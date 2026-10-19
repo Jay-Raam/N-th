@@ -13,6 +13,9 @@ export default function Hero() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    // Check reduced motion
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     let animId: number;
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
@@ -21,17 +24,17 @@ export default function Hero() {
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
     };
-    window.addEventListener("resize", handleResize);
+    window.addEventListener("resize", handleResize, { passive: true });
 
     // Mouse trail for interactive canvas mask
-    let mouse = { x: width / 2, y: height / 2, targetX: width / 2, targetY: height / 2 };
+    const mouse = { x: width / 2, y: height / 2, targetX: width / 2, targetY: height / 2 };
     const ripples: Array<{ x: number; y: number; r: number; opacity: number }> = [];
 
     const onMouseMove = (e: MouseEvent) => {
       mouse.targetX = e.clientX;
       mouse.targetY = e.clientY;
 
-      if (Math.random() > 0.4) {
+      if (!prefersReducedMotion && Math.random() > 0.4) {
         ripples.push({
           x: e.clientX,
           y: e.clientY,
@@ -40,7 +43,7 @@ export default function Hero() {
         });
       }
     };
-    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mousemove", onMouseMove, { passive: true });
 
     const render = () => {
       mouse.x += (mouse.targetX - mouse.x) * 0.1;
@@ -64,20 +67,22 @@ export default function Hero() {
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, width, height);
 
-      // Render expanding ripples
-      for (let i = ripples.length - 1; i >= 0; i--) {
-        const rp = ripples[i];
-        rp.r += 2.5;
-        rp.opacity *= 0.96;
+      if (!prefersReducedMotion) {
+        // Render expanding ripples
+        for (let i = ripples.length - 1; i >= 0; i--) {
+          const rp = ripples[i];
+          rp.r += 2.5;
+          rp.opacity *= 0.96;
 
-        ctx.beginPath();
-        ctx.arc(rp.x, rp.y, rp.r, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(255, 255, 255, ${rp.opacity})`;
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(rp.x, rp.y, rp.r, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(255, 255, 255, ${rp.opacity})`;
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
 
-        if (rp.opacity < 0.01) {
-          ripples.splice(i, 1);
+          if (rp.opacity < 0.01) {
+            ripples.splice(i, 1);
+          }
         }
       }
 
@@ -94,7 +99,10 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative w-full min-h-screen flex flex-col justify-between overflow-hidden bg-black text-white px-6 md:px-12 pt-28 pb-10">
+    <section
+      aria-label="Hero Overview"
+      className="relative w-full min-h-screen flex flex-col justify-between overflow-hidden bg-black text-white px-6 md:px-12 pt-28 pb-10"
+    >
       {/* Background Video */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-45">
         <video
@@ -103,6 +111,7 @@ export default function Hero() {
           loop
           muted
           playsInline
+          preload="metadata"
           className="w-full h-full object-cover object-center filter contrast-125 brightness-90"
           src="/videos/hero-bg.mp4"
         />
@@ -112,6 +121,7 @@ export default function Hero() {
       {/* Interactive Canvas Overlay */}
       <canvas
         ref={canvasRef}
+        aria-hidden="true"
         className="absolute inset-0 z-10 pointer-events-none w-full h-full mix-blend-screen"
       />
 
@@ -130,10 +140,10 @@ export default function Hero() {
       <div className="relative z-20 my-12 flex items-center">
         <Link
           href="/contact"
-          className="group relative inline-flex items-center space-x-3 px-8 py-4 bg-white text-black rounded-full font-mono text-xs uppercase tracking-widest font-semibold overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-[0_0_35px_rgba(255,255,255,0.4)]"
+          className="group relative inline-flex items-center space-x-3 px-8 py-4 bg-white text-black rounded-full font-mono text-xs uppercase tracking-widest font-semibold overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-[0_0_35px_rgba(255,255,255,0.4)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
         >
           <span className="relative z-10">BOOK A CONSULTATION</span>
-          <span className="relative z-10 text-base transition-transform duration-300 group-hover:translate-x-1">&rarr;</span>
+          <span className="relative z-10 text-base transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">&rarr;</span>
           <div className="absolute inset-0 bg-neutral-200 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300" />
         </Link>
       </div>
@@ -146,18 +156,18 @@ export default function Hero() {
         <div className="flex items-center space-x-6">
           <Link
             href="/works"
-            className="hover:text-white transition-colors"
+            className="hover:text-white transition-colors focus-visible:underline"
           >
             DISCOVER PORTFOLIO
           </Link>
-          <span>/</span>
+          <span aria-hidden="true">/</span>
           <Link
             href="/studio"
-            className="hover:text-white transition-colors"
+            className="hover:text-white transition-colors focus-visible:underline"
           >
             ATELIER ETHOS
           </Link>
-          <span>EN</span>
+          <span className="text-white/40">EN</span>
         </div>
       </div>
     </section>
