@@ -8,35 +8,53 @@ export default function CustomCursor() {
   const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
-  useEffect(() => {
-    // Only show custom cursor on fine pointer devices (desktop)
-    if (window.matchMedia("(pointer: coarse)").matches) return;
+  // Use refs for continuous positions to prevent React re-renders on mousemove
+  const mousePos = useRef({ x: -100, y: -100 });
+  const cursorPos = useRef({ x: -100, y: -100 });
+  const isVisibleRef = useRef(false);
 
-    let mouseX = -100;
-    let mouseY = -100;
-    let cursorX = -100;
-    let cursorY = -100;
+  useEffect(() => {
+    // Check coarse pointer (touch devices) and reduced motion preference
+    const isCoarse = window.matchMedia("(pointer: coarse)");
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    if (isCoarse.matches || prefersReducedMotion.matches) {
+      return;
+    }
 
     const onMouseMove = (e: MouseEvent) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      if (!isVisible) setIsVisible(true);
+      mousePos.current.x = e.clientX;
+      mousePos.current.y = e.clientY;
+
+      if (!isVisibleRef.current) {
+        isVisibleRef.current = true;
+        setIsVisible(true);
+      }
     };
 
-    const onMouseEnter = () => setIsVisible(true);
-    const onMouseLeave = () => setIsVisible(false);
+    const onMouseEnter = () => {
+      isVisibleRef.current = true;
+      setIsVisible(true);
+    };
 
-    window.addEventListener("mousemove", onMouseMove);
+    const onMouseLeave = () => {
+      isVisibleRef.current = false;
+      setIsVisible(false);
+    };
+
+    window.addEventListener("mousemove", onMouseMove, { passive: true });
     document.addEventListener("mouseenter", onMouseEnter);
     document.addEventListener("mouseleave", onMouseLeave);
 
-    // Add hover listeners to links and buttons
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement | null;
       if (
         target?.closest("a") ||
         target?.closest("button") ||
         target?.closest('[role="button"]') ||
+        target?.closest("input") ||
+        target?.closest("textarea") ||
+        target?.closest("select") ||
         target?.classList.contains("interactive")
       ) {
         setIsHovered(true);
@@ -45,19 +63,19 @@ export default function CustomCursor() {
       }
     };
 
-    document.addEventListener("mouseover", handleMouseOver);
+    document.addEventListener("mouseover", handleMouseOver, { passive: true });
 
     let animFrame: number;
     const render = () => {
       // Smooth lerp for outer ring
-      cursorX += (mouseX - cursorX) * 0.18;
-      cursorY += (mouseY - cursorY) * 0.18;
+      cursorPos.current.x += (mousePos.current.x - cursorPos.current.x) * 0.18;
+      cursorPos.current.y += (mousePos.current.y - cursorPos.current.y) * 0.18;
 
       if (cursorRef.current) {
-        cursorRef.current.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0)`;
+        cursorRef.current.style.transform = `translate3d(${cursorPos.current.x}px, ${cursorPos.current.y}px, 0)`;
       }
       if (dotRef.current) {
-        dotRef.current.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+        dotRef.current.style.transform = `translate3d(${mousePos.current.x}px, ${mousePos.current.y}px, 0)`;
       }
 
       animFrame = requestAnimationFrame(render);
@@ -72,12 +90,12 @@ export default function CustomCursor() {
       document.removeEventListener("mouseover", handleMouseOver);
       cancelAnimationFrame(animFrame);
     };
-  }, [isVisible]);
+  }, []); // Run once on mount; do not re-bind on isVisible changes
 
   if (!isVisible) return null;
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-[9999] overflow-hidden">
+    <div className="pointer-events-none fixed inset-0 z-[9999] overflow-hidden" aria-hidden="true">
       {/* Outer ring */}
       <div
         ref={cursorRef}
