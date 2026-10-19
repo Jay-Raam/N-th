@@ -9,7 +9,7 @@ export default function Footer() {
   };
 
   return (
-    <footer id="footer" className="relative w-full bg-black text-white px-6 md:px-12 pt-24 md:pt-36 pb-12 overflow-hidden select-none">
+    <footer id="footer" aria-label="Atelier Footer" className="relative w-full bg-black text-white px-6 md:px-12 pt-24 md:pt-36 pb-12 overflow-hidden select-none">
       <div className="max-w-7xl mx-auto flex flex-col space-y-24">
         {/* Main CTA Block */}
         <div className="flex flex-col space-y-12">
@@ -23,18 +23,18 @@ export default function Footer() {
           <div className="flex flex-wrap items-center gap-6 pt-4">
             <Link
               href="/contact"
-              className="inline-flex items-center space-x-3 px-8 py-4 bg-white text-black rounded-full font-mono text-xs uppercase tracking-widest font-semibold hover:bg-neutral-200 transition-all duration-300 hover:scale-105"
+              className="inline-flex items-center space-x-3 px-8 py-4 bg-white text-black rounded-full font-mono text-xs uppercase tracking-widest font-semibold hover:bg-neutral-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white transition-all duration-300 hover:scale-105"
             >
               <span>BOOK A CONSULTATION</span>
-              <span>&rarr;</span>
+              <span aria-hidden="true">&rarr;</span>
             </Link>
 
             <Link
               href="/contact#inquiry"
-              className="inline-flex items-center space-x-3 px-8 py-4 border border-white/30 rounded-full font-mono text-xs uppercase tracking-widest hover:border-white hover:bg-white/10 transition-all duration-300"
+              className="inline-flex items-center space-x-3 px-8 py-4 border border-white/30 rounded-full font-mono text-xs uppercase tracking-widest hover:border-white hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white transition-all duration-300"
             >
               <span>SEND BRIEF / INQUIRY</span>
-              <span className="font-mono">@</span>
+              <span className="font-mono" aria-hidden="true">@</span>
             </Link>
           </div>
         </div>
@@ -45,53 +45,57 @@ export default function Footer() {
             <span className="text-white/40 block mb-2">Channels</span>
             <Link
               href="/contact"
-              className="hover:text-white text-white/70 transition-colors inline-flex items-center space-x-1"
+              className="hover:text-white text-white/70 transition-colors inline-flex items-center space-x-1 focus-visible:underline"
             >
               <span>Direct Inquiries</span>
-              <ArrowUpRight className="w-3.5 h-3.5" />
+              <ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" />
             </Link>
             <Link
               href="/awards"
-              className="hover:text-white text-white/70 transition-colors inline-flex items-center space-x-1"
+              className="hover:text-white text-white/70 transition-colors inline-flex items-center space-x-1 focus-visible:underline"
             >
               <span>Industry Recognition</span>
-              <ArrowUpRight className="w-3.5 h-3.5" />
+              <ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" />
             </Link>
             <Link
               href="/studio"
-              className="hover:text-white text-white/70 transition-colors inline-flex items-center space-x-1"
+              className="hover:text-white text-white/70 transition-colors inline-flex items-center space-x-1 focus-visible:underline"
             >
               <span>Atelier Archive</span>
-              <ArrowUpRight className="w-3.5 h-3.5" />
+              <ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" />
             </Link>
           </div>
 
-          <div className="md:col-span-4 flex flex-col space-y-3">
+          <nav aria-label="Footer navigation" className="md:col-span-4 flex flex-col space-y-3">
             <span className="text-white/40 block mb-2">Navigation</span>
-            <Link href="/works" className="hover:text-white text-white/70 transition-colors">
+            <Link href="/works" className="hover:text-white text-white/70 transition-colors focus-visible:underline">
               WORKS
             </Link>
-            <Link href="/studio" className="hover:text-white text-white/70 transition-colors">
+            <Link href="/studio" className="hover:text-white text-white/70 transition-colors focus-visible:underline">
               STUDIO
             </Link>
-            <Link href="/awards" className="hover:text-white text-white/70 transition-colors">
+            <Link href="/awards" className="hover:text-white text-white/70 transition-colors focus-visible:underline">
               AWARDS
             </Link>
-            <Link href="/method" className="hover:text-white text-white/70 transition-colors">
+            <Link href="/method" className="hover:text-white text-white/70 transition-colors focus-visible:underline">
               METHOD
             </Link>
-          </div>
+          </nav>
 
           <div className="md:col-span-4 flex flex-col justify-between items-start md:items-end">
             <button
+              type="button"
               onClick={scrollToTop}
-              className="px-4 py-2 border border-white/20 rounded-full hover:border-white hover:bg-white hover:text-black transition-all"
+              aria-label="Scroll back to top of page"
+              className="px-4 py-2 border border-white/20 rounded-full hover:border-white hover:bg-white hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-white transition-all"
             >
               BACK TO TOP &uarr;
             </button>
             <div className="mt-8 md:mt-0 text-left md:text-right text-white/40">
               London &mdash; Paris<br />
-              atelier@nth-studio.com
+              <a href="mailto:atelier@nth-studio.com" className="hover:text-white underline underline-offset-2">
+                atelier@nth-studio.com
+              </a>
             </div>
           </div>
         </div>
@@ -103,11 +107,11 @@ export default function Footer() {
           </div>
           <div className="flex flex-wrap gap-4">
             <span>Augmented Digital Atelier</span>
-            <span>&bull;</span>
+            <span aria-hidden="true">&bull;</span>
             <Link href="/method" className="text-white/70 hover:text-white underline underline-offset-2">
               Bespoke Systems
             </Link>
-            <span>&bull;</span>
+            <span aria-hidden="true">&bull;</span>
             <Link href="/contact" className="text-white/70 hover:text-white underline underline-offset-2">
               Private Commissions
             </Link>
