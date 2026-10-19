@@ -1,15 +1,46 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { PROJECTS, Project } from "@/data/projects";
+import { PROJECTS } from "@/data/projects";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 
 export function generateStaticParams() {
   return PROJECTS.map((project) => ({
     slug: project.slug,
   }));
+}
+
+export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
+  const project = PROJECTS.find((p) => p.slug === params.slug);
+  if (!project) {
+    return {
+      title: "Project Not Found",
+    };
+  }
+
+  return {
+    title: `${project.title} — ${project.category}`,
+    description: project.description,
+    alternates: {
+      canonical: `https://n-th.vercel.app/works/${project.slug}`,
+    },
+    openGraph: {
+      title: `${project.title} | N'TH STUDIO`,
+      description: project.description,
+      url: `https://n-th.vercel.app/works/${project.slug}`,
+      images: [
+        {
+          url: project.image,
+          width: 1200,
+          height: 630,
+          alt: project.title,
+        },
+      ],
+    },
+  };
 }
 
 export default function ProjectPage({ params }: { params: { slug: string } }) {
@@ -28,14 +59,14 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
 
       <article className="pt-36 pb-24 px-6 md:px-12 max-w-7xl mx-auto flex flex-col space-y-20">
         {/* Breadcrumb Navigation */}
-        <div className="flex items-center space-x-3 font-mono text-xs uppercase tracking-wider text-white/50">
-          <Link href="/works" className="hover:text-white transition-colors flex items-center space-x-1">
-            <ArrowLeft className="w-3.5 h-3.5" />
+        <nav aria-label="Breadcrumb" className="flex items-center space-x-3 font-mono text-xs uppercase tracking-wider text-white/50">
+          <Link href="/works" className="hover:text-white transition-colors flex items-center space-x-1 focus-visible:underline">
+            <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />
             <span>Archive</span>
           </Link>
-          <span>/</span>
-          <span className="text-white">{project.title}</span>
-        </div>
+          <span aria-hidden="true">/</span>
+          <span className="text-white" aria-current="page">{project.title}</span>
+        </nav>
 
         {/* Project Header */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start border-b border-white/15 pb-16">
@@ -98,19 +129,19 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
         <div className="pt-12 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
           <Link
             href="/works"
-            className="font-mono text-xs uppercase tracking-widest text-white/50 hover:text-white transition-colors"
+            className="font-mono text-xs uppercase tracking-widest text-white/50 hover:text-white focus-visible:underline transition-colors"
           >
             &larr; BACK TO ALL COMMISSIONS
           </Link>
 
           <Link
             href={`/works/${nextProject.slug}`}
-            className="group flex items-center space-x-4 border border-white/20 px-6 py-4 rounded-full hover:border-white hover:bg-white hover:text-black transition-all duration-300"
+            className="group flex items-center space-x-4 border border-white/20 px-6 py-4 rounded-full hover:border-white hover:bg-white hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-white transition-all duration-300"
           >
             <span className="font-mono text-xs uppercase tracking-widest">
               NEXT PROJECT: {nextProject.title}
             </span>
-            <ArrowUpRight className="w-4 h-4 transform group-hover:rotate-45 transition-transform" />
+            <ArrowUpRight className="w-4 h-4 transform group-hover:rotate-45 transition-transform" aria-hidden="true" />
           </Link>
         </div>
       </article>
